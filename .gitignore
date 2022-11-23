@@ -1,3 +1,6 @@
+# Large File
+yolov3.weights
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -127,4 +130,3 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
-yolo_object_detection/yolov3.cfg
