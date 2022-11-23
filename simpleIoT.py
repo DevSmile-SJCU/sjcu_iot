@@ -1,7 +1,9 @@
 import os
-from flask import Flask, request, jsonify, redirect, url_for
+from flask import Flask, request, jsonify, redirect, url_for, render_template
+from werkzeug.utils import secure_filename
 
-app = Flask(__name__)
+# HTML 파일을 전달하는 기능을 구현하기 위해 수정
+app = Flask(__name__, static_folder='static', template_folder='templates')
 
 @app.route('/hello')
 def hello_IoT():
@@ -64,6 +66,40 @@ def fileNotFond(error):
 @app.route('/')
 def index():
     return redirect(url_for('hello_IoT'))
+
+# image Templage Test
+@app.route('/image')
+def image(name=None):
+     return render_template('image.html', name=name)
+
+# File Upload를 위한 HTML
+@app.route('/upload')
+def upload_view():
+     return render_template('upload.html')
+ 
+# File Upload
+upload_path = './data'
+@app.route('/upload', methods=['POST'])
+def upload_file():
+    file = request.files['file']
+    filename = secure_filename(file.filename)
+    os.makedirs(upload_path, exist_ok=True)
+    file.save(os.path.join(upload_path, filename))
+    return 'Upload Success'
+
+# Calc Template 
+@app.route('/calc')
+def calc(name=None):
+     return render_template('calc.html', name=name)
+ 
+# Calc 기능
+@app.route('/calc', methods=['POST'])
+def caluate():
+    formula = request.get_data().decode('utf-8')
+    formula = formula.replace(" ", "")
+    print(formula)
+    calcResult = eval(formula)
+    return str(calcResult)
 
 if __name__ == '__main__':
 	app.run(
